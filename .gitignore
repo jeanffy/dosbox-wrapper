@@ -1,0 +1,15 @@
+.vscode/*
+!.vscode/extensions.json
+!.vscode/launch.json
+!.vscode/settings.json
+!.vscode/tasks.json
+
+bin/*
+!bin/.gitkeep
+
+data/config/*
+!data/config/.gitkeep
+
+dist
+node_modules
+output

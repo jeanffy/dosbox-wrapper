@@ -1,0 +1,29 @@
+{
+  "compilerOptions": {
+    "target": "es2018",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "types": ["node", "jest"],
+    "noImplicitAny": true,
+    "removeComments": true,
+    "skipLibCheck": true,
+    "noLib": false,
+    "preserveConstEnums": true,
+    "declaration": false,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "allowSyntheticDefaultImports": true,
+    "outDir": "./dist",
+    "sourceMap": true,
+    "strict": true,
+    "strictPropertyInitialization": false,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "typeRoots": ["./node_modules/@types", "./src/types", "./test/types"]
+  },
+  "compileOnSave": true,
+  "include": ["./src/**/*.ts", "./test/**/*.ts"],
+  "exclude": []
+}
