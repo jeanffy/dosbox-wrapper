@@ -48,7 +48,7 @@ async function main(args: string[]): Promise<void> {
   const dosboxConfigFile = path.join(dosboxGeneratedConfigRoot, `${progName}.conf`);
   const capturesFolder = path.join(progFolder, 'captures');
 
-  let exeToLaunch = userConfig.exeToLaunch;
+  const exeToLaunch = userConfig.exeToLaunch;
   let cmdToLaunch = undefined;
 
   if (!(await Utils.directoryExists(progFolder))) {
@@ -118,7 +118,7 @@ async function main(args: string[]): Promise<void> {
 
   // append user config file if provided
   if (await Utils.fileExists(userConfigYmlFile)) {
-    for (let key in userConfig.dosboxConf) {
+    for (const key in userConfig.dosboxConf) {
       let value = userConfig.dosboxConf[key];
       if (value !== undefined) {
         MyConsole.notice(`Using user DOSBox [${key}] config in '${userConfigYmlFile}'`);

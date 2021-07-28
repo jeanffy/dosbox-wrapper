@@ -13,7 +13,7 @@ export namespace Utils {
       const stats: fs.Stats = await fs.promises.stat(filePath);
       return stats.isFile();
     } catch (error) {
-      if (error.hasOwnProperty('code') && error.code === 'ENOENT') {
+      if (Object.prototype.hasOwnProperty.call(error, 'code') && error.code === 'ENOENT') {
         return false;
       }
       throw error;
@@ -25,7 +25,7 @@ export namespace Utils {
       const stats: fs.Stats = await fs.promises.stat(dirPath);
       return stats.isDirectory();
     } catch (error) {
-      if (error.hasOwnProperty('code') && error.code === 'ENOENT') {
+      if (Object.prototype.hasOwnProperty.call(error, 'code') && error.code === 'ENOENT') {
         return false;
       }
       throw error;
