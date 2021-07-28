@@ -1,4 +1,5 @@
 import * as childProcess from 'child_process';
+import { UserConfig } from './config';
 import { MyConsole } from './my-console';
 import { DBWError, Utils } from './utils';
 
@@ -48,34 +49,39 @@ export namespace DOSBox {
     }
   }
 
-  export async function launch(configFilePath: string): Promise<void> {
+  export async function launch(userConfig: UserConfig, configFilePath: string): Promise<void> {
     if (!(await Utils.fileExists(configFilePath))) {
       throw new DBWError(`DOSBox config file '${configFilePath}' not found`);
     }
 
     MyConsole.notice(`Launching DOSBox with config in '${configFilePath}'`);
     MyConsole.notice('Useful keyboard shortcuts:');
+    MyConsole.notice('  Ctrl+F1    launch key mapper (Ctrl+Option+F1 on macOS)');
     MyConsole.notice('  Ctrl+F6    take screenshot');
     MyConsole.notice('  Ctrl+F10   release mouse cursor');
     MyConsole.notice('  Ctrl+F11   decrease cycles');
     MyConsole.notice('  Ctrl+F12   increase cycles');
 
     let dosboxCall;
-    switch (process.platform) {
-      case 'darwin':
-        dosboxCall = 'open -a DOSBox --args';
-        break;
-      case 'linux':
-      case 'aix':
-      case 'cygwin':
-      case 'freebsd':
-      case 'netbsd':
-      case 'openbsd':
-      case 'sunos':
-        dosboxCall = 'dosbox';
-        break;
-      default:
-        throw new DBWError(`Unknown platform '${process.platform}'`);
+    if (userConfig.dosboxCommand !== undefined) {
+      dosboxCall = userConfig.dosboxCommand;
+    } else {
+      switch (process.platform) {
+        case 'darwin':
+          dosboxCall = 'open -a DOSBox --args';
+          break;
+        case 'linux':
+        case 'aix':
+        case 'cygwin':
+        case 'freebsd':
+        case 'netbsd':
+        case 'openbsd':
+        case 'sunos':
+          dosboxCall = 'dosbox';
+          break;
+        default:
+          throw new DBWError(`Unknown platform '${process.platform}'`);
+      }
     }
     dosboxCall += ` -conf "${configFilePath}" -exit`;
 

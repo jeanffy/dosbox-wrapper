@@ -7,6 +7,7 @@ import * as yaml from 'js-yaml';
 
 export interface UserConfigStruct {
   dosboxWrapper: {
+    dosBoxCommand?: string;
     paths?: {
       bin?: string;
     };
@@ -15,6 +16,10 @@ export interface UserConfigStruct {
 
 export class UserConfig {
   private config: UserConfigStruct | undefined;
+
+  public get dosboxCommand(): string | undefined {
+    return this.config?.dosboxWrapper?.dosBoxCommand;
+  }
 
   public get binPath(): string | undefined {
     return this.config?.dosboxWrapper?.paths?.bin;

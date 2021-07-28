@@ -136,11 +136,15 @@ A `$HOME/.dosbox-wrapper` fril can be created to hold some global wrapper config
 
 ```yaml
 dosboxWrapper:
+  dosboxCommand: <string>
   paths:
     bin: <string>
 ```
 
-- `bin`: absolute path of the `bin` folder (by default searched in current working directory when typing `npm start <name>`)
+- `bin`: absolute path of the `bin` folder - by default searched in current working directory when typing `npm start <name>`
+- `dosboxCommand`: the command to launch DOSBox (`--conf` argument is automatically appended) - by default it is:
+  - `open -a DOSBox` on macOS
+  - just `dosbox` on other platforms
 
 ## For a particular program
 
@@ -196,3 +200,4 @@ Generated dosbox.conf files can be found in the `data/config` folder.
 # References
 
 - [DOSBox wiki](https://www.dosbox.com/wiki/Main_Page)
+- [DOSBox config file](https://www.dosbox.com/wiki/Dosbox.conf)

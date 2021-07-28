@@ -147,7 +147,7 @@ async function main(args: string[]): Promise<void> {
 
   // Launching DOSBox
 
-  await DOSBox.launch(dosboxConfigFile);
+  await DOSBox.launch(userConfig, dosboxConfigFile);
 }
 
 async function wrapper(): Promise<void> {
