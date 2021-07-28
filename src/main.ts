@@ -60,7 +60,7 @@ async function main(args: string[]): Promise<void> {
 
   if (exeToLaunch === undefined) {
     cmdToLaunch = `if exist ${programBinFolderName}.exe ${programBinFolderName}.exe`;
-    MyConsole.warn(`No executable specified, will try to run '${programBinFolderName}.exe', otherwise must be ran manually form command prompt`);
+    MyConsole.warn(`No executable specified, will try to run '${programBinFolderName}.exe', otherwise must be ran manually from command prompt`);
   }
 
   // Creating necessary folders
@@ -111,6 +111,7 @@ async function main(args: string[]): Promise<void> {
     await Utils.appendFile(dosboxConfigFile, `
       c:
       cd ${programBinFolderNameWithBackslashes}
+      ${userConfig.exePreCommand !== undefined ? userConfig.exePreCommand : ''}
       ${runCommand}
     `);
   }

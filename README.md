@@ -48,11 +48,16 @@ npm start <name>
 
 to launch program inside DOSBox.
 
-With no other modifications, DOSBox will start, mount the drive C with folder `bin/<name>/c` and `cd` to the `<name>` directory.
+With no other modifications, DOSBox will:
+
+- start
+- mount the drive C with folder `bin/<name>/c`
+- `cd` to the `<name>` folder
+- try to launch the executable named `<name>.exe` (in the `C:\<name>` folder)
 
 The `<name>` argument is case insensitive. If your folder tree is `bin/UltimaIV/c/UltimaIV`, you can safely type `npm start ultimaiv`.
 
-> If the `bin/<name>/C/<name>` folder does not exist, DOSBox will not `cd` to the `<name>` directory, it will just stay at the `C:>` prompt (and it that case, the executable `<exe>` won't be launched).
+> If the `bin/<name>/C/<name>` folder does not exist, DOSBox will not `cd` to the `<name>` folder, it will just stay at the `C:>` prompt (and it that case, the executable `<name>.exe` won't be launched).
 
 ## Name limitations
 
@@ -96,8 +101,8 @@ value2 line2
 
 In this specific configuration, the following placeholders can be used:
 
-- `{{binfolder}}` to refer to the program directory (`bin/<name>`)
-- `{{cfolder}}` to refer to the program binary directory (`bin/<name>/c/<name>`)
+- `{{binfolder}}` to refer to the program folder (`bin/<name>`)
+- `{{cfolder}}` to refer to the program binary folder (`bin/<name>/c/<name>`)
 
 # Mount a floppy drive
 
@@ -130,10 +135,12 @@ dosboxWrapper:
   bin:
     cFolderPath: <string>
     exeToLaunch: <string>
+    exePreCommand: <string>
 ```
 
 - `cFolderPath`: relative folder path (subfolder of `C:\` inside DOSBox) - separator must be slash character (`/`)
 - `exeToLaunch`: name of exe, com, etc. to launch at startup
+- `exePreCommand`: command to run before launching program
 
 For example, when you configure a different name for the folder inside `c` (`bin/<name1>/c/<name2>`), the `config.yml` should look like:
 

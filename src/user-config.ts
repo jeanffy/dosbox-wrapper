@@ -11,6 +11,7 @@ export interface UserConfigStruct {
     bin: {
       cFolderPath?: string;
       exeToLaunch?: string;
+      exePreCommand?: string;
     };
   };
 }
@@ -31,6 +32,10 @@ export class UserConfig {
 
   public get exeToLaunch(): string | undefined {
     return this.config?.dosboxWrapper?.bin?.exeToLaunch;
+  }
+
+  public get exePreCommand(): string | undefined {
+    return this.config?.dosboxWrapper?.bin?.exePreCommand;
   }
 
   public async load(filePath: string): Promise<void> {
