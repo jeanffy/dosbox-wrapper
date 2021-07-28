@@ -11,7 +11,9 @@ export interface ProgramDosboxConf {
 
 export interface ProgramConfigStruct {
   dosboxWrapper: {
-    conf: ProgramDosboxConf;
+    dosbox: {
+      conf: ProgramDosboxConf;
+    };
     bin: {
       cFolderPath?: string;
       exeToLaunch?: string;
@@ -21,13 +23,14 @@ export interface ProgramConfigStruct {
 }
 
 export class ProgramConfig {
+  public filePath: string;
   private config: ProgramConfigStruct | undefined;
 
   public get dosboxConf(): ProgramDosboxConf {
-    if (this.config === undefined || this.config.dosboxWrapper === undefined || this.config.dosboxWrapper.conf === undefined) {
+    if (this.config?.dosboxWrapper?.dosbox?.conf === undefined) {
       return {};
     }
-    return this.config?.dosboxWrapper?.conf;
+    return this.config?.dosboxWrapper?.dosbox?.conf;
   }
 
   public get cFolderPath(): string | undefined {
@@ -43,6 +46,7 @@ export class ProgramConfig {
   }
 
   public async load(filePath: string): Promise<void> {
+    this.filePath = filePath;
     const ymlContent = await fs.promises.readFile(filePath, 'utf-8');
     this.config = yaml.load(ymlContent) as ProgramConfigStruct;
   }

@@ -85,7 +85,22 @@ async function main(args: string[]): Promise<void> {
   // Creating DOSBox config file
 
   // start with default config file
+
   await fs.promises.copyFile(commonConfigPath, dosboxConfigFile);
+
+  // append user-level provided config
+
+  for (const key in userConfig.dosboxConf) {
+    let value = userConfig.dosboxConf[key];
+    if (value !== undefined) {
+      MyConsole.notice(`Using user DOSBox [${key}] config in '${userConfig.filePath}'`);
+      await Utils.appendFile(dosboxConfigFile, `
+        # added from ${userConfig.filePath}
+        [${key}]
+        ${value}
+      `);
+    }
+  }
 
   // append necessary commands to mount folder and run program
 
@@ -129,19 +144,18 @@ async function main(args: string[]): Promise<void> {
   }
 
   // append program config file if provided
-  if (await Utils.fileExists(programConfigYmlFile)) {
-    for (const key in programConfig.dosboxConf) {
-      let value = programConfig.dosboxConf[key];
-      if (value !== undefined) {
-        MyConsole.notice(`Using program DOSBox [${key}] config in '${programConfigYmlFile}'`);
-        value = value.split(configBinFolderPlaceholder).join(progFolder);
-        value = value.split(configCFolderPlaceholder).join(programBinFolder);
-        await Utils.appendFile(dosboxConfigFile, `
-          # added from ${programConfigYmlFile}
-          [${key}]
-          ${value}
-        `);
-      }
+
+  for (const key in programConfig.dosboxConf) {
+    let value = programConfig.dosboxConf[key];
+    if (value !== undefined) {
+      MyConsole.notice(`Using program DOSBox [${key}] config in '${programConfig.filePath}'`);
+      value = value.split(configBinFolderPlaceholder).join(progFolder);
+      value = value.split(configCFolderPlaceholder).join(programBinFolder);
+      await Utils.appendFile(dosboxConfigFile, `
+        # added from ${programConfig.filePath}
+        [${key}]
+        ${value}
+      `);
     }
   }
 

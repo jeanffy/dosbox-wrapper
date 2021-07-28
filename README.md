@@ -84,21 +84,22 @@ A specific `config.yml` file can be create in `bin/<name>/config.yml`. This file
 
 ```yaml
 dosboxWrapper:
-  conf:
-    key1: value1
-    key2: >-
-      value2 line1
-      value2 line2
+  dosbox:
+    conf:
+      key1: variable1=value1
+      key2: >-
+        variable2=value2
+        variable2=value3
 ```
 
 The `doxbox.conf` will be appended with:
 
 ```
 [key1]
-value1
+variable1=value1
 [key2]
-value2 line1
-value2 line2
+variable2=value2
+variable2=value3
 ```
 
 In this specific configuration, the following placeholders can be used:
@@ -136,7 +137,10 @@ A `$HOME/.dosbox-wrapper` fril can be created to hold some global wrapper config
 
 ```yaml
 dosboxWrapper:
-  dosboxCommand: <string>
+  dosbox:
+    conf:
+      # same as "Specific DOSBox configuration"
+    command: <string>
   paths:
     bin: <string>
 ```
