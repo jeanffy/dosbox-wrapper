@@ -7,7 +7,9 @@
 - [Mount CD-Rom drives](#mount-cd-rom-drives)
   - [From folders](#from-folders)
   - [From ISO files](#from-iso-files)
-- [Spécific wrapper configuration](#spécific-wrapper-configuration)
+- [Specific wrapper configuration](#specific-wrapper-configuration)
+  - [For the wrapper](#for-the-wrapper)
+  - [For a particular program](#for-a-particular-program)
 - [To install a program from a CD-Rom](#to-install-a-program-from-a-cd-rom)
 - [Captures](#captures)
 - [Generated doxbox.conf files](#generated-doxboxconf-files)
@@ -126,9 +128,23 @@ As with folders, put a file named `bin/<name>/d.iso`. Drive letter D will be ava
 
 `.cue` and `.bin` image files are also handled.
 
-# Spécific wrapper configuration
+# Specific wrapper configuration
 
-A specific `config.yml` file can be create in `bin/<name>/config.yml`. This file can be used to customize how this wrapper works.
+## For the wrapper
+
+A `$HOME/.dosbox-wrapper` fril can be created to hold some global wrapper configuration. This file is a YAML file with the content:
+
+```yaml
+dosboxWrapper:
+  paths:
+    bin: <string>
+```
+
+- `bin`: absolute path of the `bin` folder (by default searched in current working directory when typing `npm start <name>`)
+
+## For a particular program
+
+A specific `config.yml` file can be create in `bin/<name>/config.yml`. This file can be used to customize how this wrapper works for a particular program.
 
 ```yaml
 dosboxWrapper:

@@ -1,12 +1,13 @@
 import * as fs from 'fs';
+import * as os from 'os';
 import * as path from 'path';
 import { DOSBox, DOSBoxDrive } from './dosbox';
 import { MyConsole } from './my-console';
 import { DBWError, Utils } from './utils';
-import { UserConfig } from './user-config';
+import { UserConfig, ProgramConfig } from './config';
 
 function usage(): void {
-  MyConsole.log('npm start <prog-name> [<exe-to-launch>]')
+  MyConsole.log('npm start <prog-name>')
 }
 
 async function main(args: string[]): Promise<void> {
@@ -17,16 +18,27 @@ async function main(args: string[]): Promise<void> {
 
   // Configuration
 
+  const userConfig = new UserConfig();
+  const userConfigYmlFile = path.join(os.homedir(), '.dosbox-wrapper');
+  if (await Utils.fileExists(userConfigYmlFile)) {
+    MyConsole.notice(`Using user config in '${userConfigYmlFile}'`);
+    await userConfig.load(userConfigYmlFile);
+  }
+
   let root = path.resolve(path.join(__dirname, '..'));
   if (process.env.DBW_DIST) {
     root = path.resolve(path.join(root, '..'));
   }
-  const binRoot = path.join(root, 'bin');
+  const binRoot = (userConfig.binPath !== undefined ? userConfig.binPath : path.join(root, 'bin'));
   const configBinFolderPlaceholder = '{{binfolder}}';
   const configCFolderPlaceholder = '{{cfolder}}';
   const dosboxGeneratedConfigRoot = path.join(root, 'data', 'config');
   const commonConfigPath = path.join(root, 'data', 'common.conf');
   const freesizeC = 900;
+
+  if (!(await Utils.directoryExists(binRoot))) {
+    throw new DBWError(`No folder at '${binRoot}'`);
+  }
 
   // Parsing user arguments
 
@@ -36,19 +48,19 @@ async function main(args: string[]): Promise<void> {
   const progName = args[0];
   const progFolder = path.join(binRoot, progName);
 
-  const userConfig = new UserConfig();
-  const userConfigYmlFile = path.join(progFolder, 'config.yml');
-  if (await Utils.fileExists(userConfigYmlFile)) {
-    MyConsole.notice(`Using config in '${userConfigYmlFile}'`);
-    await userConfig.load(userConfigYmlFile);
+  const programConfig = new ProgramConfig();
+  const programConfigYmlFile = path.join(progFolder, 'config.yml');
+  if (await Utils.fileExists(programConfigYmlFile)) {
+    MyConsole.notice(`Using program config in '${programConfigYmlFile}'`);
+    await programConfig.load(programConfigYmlFile);
   }
 
-  const programBinFolderName = userConfig.cFolderPath ?? progName;
-  const programBinFolder = path.join(progFolder, 'c', userConfig.cFolderPath ?? programBinFolderName);
+  const programBinFolderName = programConfig.cFolderPath ?? progName;
+  const programBinFolder = path.join(progFolder, 'c', programConfig.cFolderPath ?? programBinFolderName);
   const dosboxConfigFile = path.join(dosboxGeneratedConfigRoot, `${progName}.conf`);
   const capturesFolder = path.join(progFolder, 'captures');
 
-  const exeToLaunch = userConfig.exeToLaunch;
+  const exeToLaunch = programConfig.exeToLaunch;
   let cmdToLaunch = undefined;
 
   if (!(await Utils.directoryExists(progFolder))) {
@@ -111,21 +123,21 @@ async function main(args: string[]): Promise<void> {
     await Utils.appendFile(dosboxConfigFile, `
       c:
       cd ${programBinFolderNameWithBackslashes}
-      ${userConfig.exePreCommand !== undefined ? userConfig.exePreCommand : ''}
+      ${programConfig.exePreCommand !== undefined ? programConfig.exePreCommand : ''}
       ${runCommand}
     `);
   }
 
-  // append user config file if provided
-  if (await Utils.fileExists(userConfigYmlFile)) {
-    for (const key in userConfig.dosboxConf) {
-      let value = userConfig.dosboxConf[key];
+  // append program config file if provided
+  if (await Utils.fileExists(programConfigYmlFile)) {
+    for (const key in programConfig.dosboxConf) {
+      let value = programConfig.dosboxConf[key];
       if (value !== undefined) {
-        MyConsole.notice(`Using user DOSBox [${key}] config in '${userConfigYmlFile}'`);
+        MyConsole.notice(`Using program DOSBox [${key}] config in '${programConfigYmlFile}'`);
         value = value.split(configBinFolderPlaceholder).join(progFolder);
         value = value.split(configCFolderPlaceholder).join(programBinFolder);
         await Utils.appendFile(dosboxConfigFile, `
-          # added from ${userConfigYmlFile}
+          # added from ${programConfigYmlFile}
           [${key}]
           ${value}
         `);

@@ -1,13 +1,17 @@
 import * as fs from 'fs';
 import * as yaml from 'js-yaml';
 
-export interface UserDosboxConf {
+//
+// configuration (possibly) located in each program folder (subfolder of bin folder)
+//
+
+export interface ProgramDosboxConf {
   [key: string]: string;
 }
 
-export interface UserConfigStruct {
+export interface ProgramConfigStruct {
   dosboxWrapper: {
-    conf: UserDosboxConf;
+    conf: ProgramDosboxConf;
     bin: {
       cFolderPath?: string;
       exeToLaunch?: string;
@@ -16,10 +20,10 @@ export interface UserConfigStruct {
   };
 }
 
-export class UserConfig {
-  private config: UserConfigStruct | undefined;
+export class ProgramConfig {
+  private config: ProgramConfigStruct | undefined;
 
-  public get dosboxConf(): UserDosboxConf {
+  public get dosboxConf(): ProgramDosboxConf {
     if (this.config === undefined || this.config.dosboxWrapper === undefined || this.config.dosboxWrapper.conf === undefined) {
       return {};
     }
@@ -40,6 +44,6 @@ export class UserConfig {
 
   public async load(filePath: string): Promise<void> {
     const ymlContent = await fs.promises.readFile(filePath, 'utf-8');
-    this.config = yaml.load(ymlContent) as UserConfigStruct;
+    this.config = yaml.load(ymlContent) as ProgramConfigStruct;
   }
 }
