@@ -1,7 +1,7 @@
 import * as fs from 'fs';
 import * as os from 'os';
 import * as path from 'path';
-import { DOSBox, DOSBoxDrive } from './dosbox';
+import { DOSBox, DOSBoxDrive, DOSBoxFloppy, DOSBoxFloppyDrive } from './dosbox';
 import { MyConsole } from './my-console';
 import { DBWError, Utils } from './utils';
 import { UserConfig, ProgramConfig } from './config';
@@ -67,7 +67,8 @@ async function main(args: string[]): Promise<void> {
     throw new DBWError(`No folder at '${progFolder}'`);
   }
   if (!(await Utils.directoryExists(programBinFolder))) {
-    throw new DBWError(`No bin folder at '${programBinFolder}'`);
+    //throw new DBWError(`No bin folder at '${programBinFolder}'`);
+    MyConsole.warn(`No bin folder at '${programBinFolder}'`);
   }
 
   if (exeToLaunch === undefined) {
@@ -91,7 +92,7 @@ async function main(args: string[]): Promise<void> {
   // append user-level provided config
 
   for (const key in userConfig.dosboxConf) {
-    let value = userConfig.dosboxConf[key];
+    const value = userConfig.dosboxConf[key];
     if (value !== undefined) {
       MyConsole.notice(`Using user DOSBox [${key}] config in '${userConfig.filePath}'`);
       await Utils.appendFile(dosboxConfigFile, `
@@ -111,8 +112,12 @@ async function main(args: string[]): Promise<void> {
     [autoexec]
   `);
 
-  // mount floppy volume if provided
-  await DOSBox.mountFloppy({ letter: 'a', folderPath: path.join(progFolder, 'a') }, dosboxConfigFile);
+  // mount floppy volumes if provided
+  const floppies: DOSBoxFloppy[] = [
+    { letter: DOSBoxFloppyDrive.A, folderPath: path.join(progFolder, 'a'), imgPath: path.join(progFolder, 'a.img') },
+    { letter: DOSBoxFloppyDrive.B, folderPath: path.join(progFolder, 'b'), imgPath: path.join(progFolder, 'b.img') }
+  ];
+  await DOSBox.mountFloppies(floppies, dosboxConfigFile);
 
   // mount CD-rom volumes if provided
   const drives: DOSBoxDrive[] = ['d', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p'].map(letter => ({
@@ -127,6 +132,8 @@ async function main(args: string[]): Promise<void> {
   // mount system drive c:
   await DOSBox.mountSystem({ folderPath: path.join(progFolder, 'c'), freeSize: freesizeC }, dosboxConfigFile);
 
+  await Utils.appendFile(dosboxConfigFile, 'c:');
+
   if (await Utils.directoryExists(programBinFolder)) {
     let runCommand = '';
     if (exeToLaunch !== undefined) {
@@ -136,7 +143,6 @@ async function main(args: string[]): Promise<void> {
     }
     const programBinFolderNameWithBackslashes = programBinFolderName.split('/').join('\\');
     await Utils.appendFile(dosboxConfigFile, `
-      c:
       cd ${programBinFolderNameWithBackslashes}
       ${programConfig.exePreCommand !== undefined ? programConfig.exePreCommand : ''}
       ${runCommand}

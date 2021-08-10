@@ -8,6 +8,17 @@ export interface DOSBoxSystemDrive {
   freeSize: number;
 }
 
+export enum DOSBoxFloppyDrive {
+  A = 'a',
+  B = 'b'
+}
+
+export interface DOSBoxFloppy {
+  letter: DOSBoxFloppyDrive;
+  folderPath: string;
+  imgPath?: string;
+}
+
 export interface DOSBoxDrive {
   letter: string;
   folderPath: string;
@@ -24,10 +35,15 @@ export namespace DOSBox {
     MyConsole.notice(`System drive c: mounted to '${drive.folderPath}'`);
   }
 
-  export async function mountFloppy(drive: DOSBoxDrive, configFilePath: string): Promise<void> {
-    if (await Utils.directoryExists(drive.folderPath)) {
-      await Utils.appendFile(configFilePath, `mount a "${drive.folderPath}" -t floppy -freesize 1440`);
-      MyConsole.notice(`Floppy drive a: mounted to '${drive.folderPath}'`);
+  export async function mountFloppies(floppies: DOSBoxFloppy[], configFilePath: string): Promise<void> {
+    for (const floppy of floppies) {
+      if (await Utils.directoryExists(floppy.folderPath)) {
+        await Utils.appendFile(configFilePath, `mount a "${floppy.folderPath}" -t floppy -freesize 1440`);
+        MyConsole.notice(`Floppy drive a: mounted to '${floppy.folderPath}'`);
+      } else if (floppy.imgPath !== undefined && await Utils.fileExists(floppy.imgPath)) {
+        await Utils.appendFile(configFilePath, `imgmount ${floppy.letter} "${floppy.imgPath}" -t floppy`);
+        MyConsole.notice(`Floppy drive ${floppy.letter}: mounted to '${floppy.imgPath}'`);
+      }
     }
   }
 

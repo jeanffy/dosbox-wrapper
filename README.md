@@ -3,7 +3,8 @@
   - [Name limitations](#name-limitations)
 - [Sound inside DOSBox](#sound-inside-dosbox)
 - [Specific DOSBox configuration](#specific-dosbox-configuration)
-- [Mount a floppy drive](#mount-a-floppy-drive)
+- [Mount floppy drives](#mount-floppy-drives)
+  - [From IMG files](#from-img-files)
 - [Mount CD-Rom drives](#mount-cd-rom-drives)
   - [From folders](#from-folders)
   - [From ISO files](#from-iso-files)
@@ -107,9 +108,15 @@ In this specific configuration, the following placeholders can be used:
 - `{{binfolder}}` to refer to the program folder (`bin/<name>`)
 - `{{cfolder}}` to refer to the program binary folder (`bin/<name>/c/<name>`)
 
-# Mount a floppy drive
+# Mount floppy drives
 
-Create the folder `bin/<name>/a` and put the files in it. Drive letter A will be available.
+Create the folder `bin/<name>/a` (or `bin/<name>/b`) and put the files in it. Drive letter A (or B) will be available. You can create both.
+
+## From IMG files
+
+As with folders, put a file named `bin/<name>/a.img` (or `bin/<name>/a.img`). Drive letter A (or B) will be available.
+
+> Folders takes precedence over IMG files. If folder `a` and file `a.iso` exist, drive a will be mounted from folder.
 
 # Mount CD-Rom drives
 
