@@ -1,8 +1,8 @@
-import * as fs from 'fs';
-import * as yaml from 'js-yaml';
+import fs from 'node:fs';
+import yaml from 'js-yaml';
 
 //
-// configuration (possibly) located in each program folder (subfolder of bin folder)
+// configuration (possibly) located in each program folder (subfolder of hdd folder)
 //
 
 export interface ProgramDosboxConf {
@@ -23,7 +23,7 @@ export interface ProgramConfigStruct {
 }
 
 export class ProgramConfig {
-  public filePath: string;
+  public filePath = '';
   private config: ProgramConfigStruct | undefined;
 
   public get dosboxConf(): ProgramDosboxConf {

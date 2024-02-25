@@ -1,3 +1,14 @@
 {
-  "typescript.tsdk": "node_modules\\typescript\\lib",
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "explorer.autoRevealExclude": {
+    "**/node_modules": true,
+    "**/dist": true
+  },
+  "files.associations": {
+    ".eslintrc.*.json": "jsonc",
+  },
+  "files.exclude": {
+    "**/dist": true,
+    "**/node_modules": true
+  }
 }

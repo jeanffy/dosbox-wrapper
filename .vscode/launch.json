@@ -5,17 +5,20 @@
   "version": "0.2.0",
   "configurations": [
     {
+      "cwd": "${workspaceFolder}",
+      "env": {
+        "DEBUG": "1"
+      },
+      "name": "Debug run",
+      "outFiles": ["${workspaceFolder}/dist/src/**/*.js"],
+      "preLaunchTask": "build",
       "type": "node",
       "request": "launch",
-      "name": "Debug",
-      "cwd": "${workspaceFolder}",
-      "preLaunchTask": "build",
+      "runtimeArgs": ["run", "start", "--", "run", "${input:progName}"],
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "debug", "--", "${input:progName}"],
-      "outFiles": ["${workspaceFolder}/dist/src/**/*.js"],
-      "sourceMaps": true,
+      "skipFiles": ["${workspaceFolder}/node_modules/**/*.js", "<node_internals>/**/*.js"],
       "smartStep": true,
-      "skipFiles": ["${workspaceFolder}/node_modules/**/*.js", "<node_internals>/**/*.js"]
+      "sourceMaps": true,
     }
   ],
   "inputs": [

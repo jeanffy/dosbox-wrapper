@@ -1,0 +1,6 @@
+*
+!bin
+!data/common.conf
+!dist
+!node_modules
+!package.json

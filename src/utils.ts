@@ -1,5 +1,5 @@
-import * as fs from 'fs';
-import * as os from 'os';
+import fs from 'node:fs';
+import os from 'node:os';
 
 export class DBWError extends Error {
   public constructor(message: string) {
@@ -13,7 +13,8 @@ export namespace Utils {
       const stats: fs.Stats = await fs.promises.stat(filePath);
       return stats.isFile();
     } catch (error) {
-      if (Object.prototype.hasOwnProperty.call(error, 'code') && error.code === 'ENOENT') {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      if (Object.prototype.hasOwnProperty.call(error, 'code') && (error as any).code === 'ENOENT') {
         return false;
       }
       throw error;
@@ -25,7 +26,8 @@ export namespace Utils {
       const stats: fs.Stats = await fs.promises.stat(dirPath);
       return stats.isDirectory();
     } catch (error) {
-      if (Object.prototype.hasOwnProperty.call(error, 'code') && error.code === 'ENOENT') {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      if (Object.prototype.hasOwnProperty.call(error, 'code') && (error as any).code === 'ENOENT') {
         return false;
       }
       throw error;

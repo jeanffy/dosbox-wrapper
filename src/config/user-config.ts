@@ -1,5 +1,5 @@
-import * as fs from 'fs';
-import * as yaml from 'js-yaml';
+import fs from 'node:fs';
+import yaml from 'js-yaml';
 
 //
 // configuration (possibly) located in user HOME folder
@@ -16,13 +16,13 @@ export interface UserConfigStruct {
       command?: string;
     };
     paths?: {
-      bin?: string;
+      hdd?: string;
     };
   };
 }
 
 export class UserConfig {
-  public filePath: string;
+  public filePath = '';
   private config: UserConfigStruct | undefined;
 
   public get dosboxConf(): UserDosboxConf {
@@ -36,8 +36,8 @@ export class UserConfig {
     return this.config?.dosboxWrapper?.dosbox?.command;
   }
 
-  public get binPath(): string | undefined {
-    return this.config?.dosboxWrapper?.paths?.bin;
+  public get hddPath(): string | undefined {
+    return this.config?.dosboxWrapper?.paths?.hdd;
   }
 
   public async load(filePath: string): Promise<void> {

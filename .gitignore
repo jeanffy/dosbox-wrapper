@@ -4,8 +4,8 @@
 !.vscode/settings.json
 !.vscode/tasks.json
 
-bin/*
-!bin/.gitkeep
+hdd/*
+!hdd/.gitkeep
 
 data/config/*
 !data/config/.gitkeep
@@ -13,3 +13,5 @@ data/config/*
 dist
 node_modules
 output
+
+.DS_Store
